@@ -15,10 +15,10 @@ import useQuery from "../utils/useQuery";
  * @returns {JSX.Element}
  */
 function Routes() {
-  //testing
+  //testing 
   const query = useQuery();
   const date = query.get("date");
-
+ 
   return (
     <Switch>
       <Route exact={true} path="/">
