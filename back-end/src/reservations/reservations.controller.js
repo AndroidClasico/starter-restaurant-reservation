@@ -172,9 +172,32 @@ async function create(req, res, next) {
     .json({ data: await reservationsService.create(req.body.data) })
     .catch(next);
 }
+async function reservationExists(req, res, next) {
+  const reservation = await service.read(req.params.reservation_id);
+  if (reservation) {
+    res.locals.reservation = reservation;
+    return next();
+  }
+  next({
+    status: 404,
+    message: `${req.params.reservation_id}`,
+  });
+}
+
+function read(req, res, next) {
+  res.json({ data: res.locals.reservation });
+}
+
+async function update(req, res, _next) {
+  const updatedReservation = req.body.data;
+
+  const data = await service.update(updatedReservation);
+  res.json({ data });
+}
 
 module.exports = {
   list: asyncErrorBoundary(list),
+  read: [asyncErrorBoundary(reservationExists), read],
   create: [
     hasRequiredProperties,
     peopleIsValid,
@@ -187,5 +210,18 @@ module.exports = {
     dateIsNotInFuture,
     duringOpenHours,
     asyncErrorBoundary(create),
+  ],
+  update: [
+    hasBodyData,
+    nameIsValid,
+    mobileNumberIsValid,
+    dateIsValid,
+    timeIsValid,
+    peopleIsValid,
+    dateIsNotTuesday,
+    dateIsNotInFuture,
+    duringOpenHours,
+    asyncErrorBoundary(reservationExists),
+    asyncErrorBoundary(update),
   ],
 };
