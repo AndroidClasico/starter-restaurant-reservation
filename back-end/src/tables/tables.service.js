@@ -15,7 +15,7 @@ function read(table_id) {
   return knex(tableName).where({ table_id: table_id }).first();
 }
 
-
+//i need to add 'status' column to the reservations table
 function seat(table_id, reservation_id) {
   return knex.transaction(async (transaction) => {
     await knex("reservations")
@@ -30,7 +30,6 @@ function seat(table_id, reservation_id) {
       .then((records) => records[0]);
   });
 }
-
 
 module.exports = {
   list,

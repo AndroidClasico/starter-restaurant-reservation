@@ -21,14 +21,14 @@ function create(reservation) {
 }
 
 function read(reservation_id) {
-  return knex(tableName)
+  return knex("reservations")
     .select("*")
     .where({ reservation_id: reservation_id })
     .first();
 }
 
 function update(reservation) {
-  return knex(tableName)
+  return knex("reservations")
     .select("*")
     .where({ reservation_id: reservation.reservation_id })
     .update(reservation)

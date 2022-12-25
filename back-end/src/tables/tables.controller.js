@@ -68,24 +68,28 @@ async function tableExists(req, res, next) {
 
 
 function isTableLargeEnough(_req, res, next) {
-  const { capacity } = res.locals.table;
-  const { people } = res.locals.reservation;
-  if (capacity >= people) return next();
-  next({
-    status: 400,
-    message: "capacity",
-  });
+    const { capacity } = res.locals.table
+    const { people } = res.locals.reservation
+
+    if (Number(people) > Number(capacity)) {
+        return next({
+            status: 400, 
+            message: `The number of people in this party exceeds the capacity of the table`
+        })
+    }
+    next()
 }
 
 // verifying that table is NOT occupied
 function isAvailable(_req, res, next) {
-  // not occupied
-  if (!res.locals.table.reservation_id) return next();
-  // occupied
-  next({
-    status: 400,
-    message: `occupied`,
-  });
+    const { reservation_id } = res.locals.table
+    if(reservation_id) {
+        return next({
+            status: 400, 
+            message: `The table you selected is currently occupied by another party. Please select a different table.`
+        })
+    }
+    next()
 }
 
 // verifying that table is occupied

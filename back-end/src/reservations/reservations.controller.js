@@ -1,11 +1,5 @@
 const reservationsService = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
-/**
- * List handler for reservation resources
- */
-// async function list(req, res) {
-//   res.json({ data: await reservationsService.list() });
-// }
 const hasProperties = require("../errors/hasProperties");
 
 const hasRequiredProperties = hasProperties(
@@ -172,26 +166,29 @@ async function create(req, res, next) {
     .json({ data: await reservationsService.create(req.body.data) })
     .catch(next);
 }
+
+
 async function reservationExists(req, res, next) {
-  const reservation = await service.read(req.params.reservation_id);
+  const reservation = await reservationsService.read(reservation_id);
   if (reservation) {
     res.locals.reservation = reservation;
     return next();
   }
   next({
     status: 404,
-    message: `${req.params.reservation_id}`,
+    message: `Reservation ${reservation_id} cannot be found.`,
   });
 }
 
 function read(req, res, next) {
-  res.json({ data: res.locals.reservation });
+  res.json({ data: req.params.reservation_id });
 }
 
 async function update(req, res, _next) {
-  const updatedReservation = req.body.data;
+  const updatedReservation = {...req.body.data,
+  reservation_id: updatedReservation.reservation_id}
 
-  const data = await service.update(updatedReservation);
+  const data = await reservationsService.update(updatedReservation);
   res.json({ data });
 }
 
