@@ -169,6 +169,7 @@ async function create(req, res, next) {
 
 
 async function reservationExists(req, res, next) {
+  const { reservation_id } = req.params
   const reservation = await reservationsService.read(reservation_id);
   if (reservation) {
     res.locals.reservation = reservation;
@@ -181,7 +182,7 @@ async function reservationExists(req, res, next) {
 }
 
 function read(req, res, next) {
-  res.json({ data: req.params.reservation_id });
+  res.json({ data: res.locals.reservation });
 }
 
 async function update(req, res, _next) {
@@ -209,6 +210,7 @@ module.exports = {
     asyncErrorBoundary(create),
   ],
   update: [
+    reservationExists,
     hasBodyData,
     nameIsValid,
     mobileNumberIsValid,
@@ -218,7 +220,6 @@ module.exports = {
     dateIsNotTuesday,
     dateIsNotInFuture,
     duringOpenHours,
-    asyncErrorBoundary(reservationExists),
     asyncErrorBoundary(update),
   ],
 };
