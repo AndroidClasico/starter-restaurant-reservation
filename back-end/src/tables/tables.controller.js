@@ -16,7 +16,7 @@ function bodyHasData(req, res, next) {
 function hasCapacity(req, res, next) {
   const { capacity } = req.body.data;
   if (!capacity) {
-    next({ status: 400, message: "capacity" });
+    next({ status: 400, message: "no capacity" });
   } else {
     next();
   }
@@ -24,6 +24,7 @@ function hasCapacity(req, res, next) {
 
 function isValidCapacity(req, res, next) {
   const { capacity } = req.body.data;
+  // console.log("line 27 table.service: ", res.locals.table.capacity)
   if (capacity === 0 || !Number.isInteger(capacity)) {
     next({ status: 400, message: "capacity" });
   }
@@ -64,29 +65,35 @@ async function tableExists(req, res, next) {
   }
 }
 
-function isTableLargeEnough(req, res, next) {
-  const { capacity } = res.locals.table;
-  const { people } = res.locals.reservation;
+function hasEnoughCapacity(req, res, next) {
+  // const { capacity } = res.locals.table;
+  // const { people } = res.locals.reservation;
 
-  if (Number(people) > Number(capacity)) {
-    return next({
+  // if (Number(people) > Number(capacity)) {
+  if (res.locals.table.capacity < res.locals.reservation.people) {
+    next({
       status: 400,
       message: `The number of people in this party exceeds the capacity of the table`,
     });
+  } else {
+    next();
   }
-  next();
+  
 }
 
 // verifying that table is NOT occupied
-function isAvailable(req, res, next) {
-  const { reservation_id } = res.locals.table;
-  if (reservation_id) {
-    return next({
+function isOccupied(req, res, next) {
+  // const { reservation_id } = res.locals.table;
+  // if (reservation_id) {
+  if (res.locals.table.reservation_id) {
+     next();
+  } else {
+    next({
       status: 400,
-      message: `The table you selected is currently occupied by another party. Please select a different table.`,
+      message: `Table is not occupied: ${res.locals.table.table_id}`,
+      // message: `The table you selected is currently occupied by another party. Please select a different table.`,
     });
   }
-  next();
 }
 
 // verifying that table is occupied
@@ -134,8 +141,8 @@ module.exports = {
     isValidCapacity,
     // isReservationSeated,
     asyncErrorBoundary(tableExists),
-    isTableLargeEnough,
-    isAvailable,
+    hasEnoughCapacity,
+    isOccupied,
     asyncErrorBoundary(seat),
   ],
 };

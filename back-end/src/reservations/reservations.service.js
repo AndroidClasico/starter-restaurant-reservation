@@ -12,7 +12,6 @@ function listOnDate(reservation_date) {
 }
 
 
-
 function create(reservation) {
     return knex("reservations")
     .insert(reservation)
@@ -31,8 +30,9 @@ function update(reservation) {
   return knex("reservations")
     .select("*")
     .where({ reservation_id: reservation.reservation_id })
-    .update(reservation)
-    .then(() => read(reservation.reservation_id));
+    .update(reservation, "*")
+    .then((record) => record[0])
+    // .then(() => read(reservation.reservation_id));
 }
 
 module.exports = {
