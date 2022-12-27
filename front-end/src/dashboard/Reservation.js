@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Reservation({ reservations = [] }) {
   const rows = reservations.length ? (
@@ -17,6 +18,12 @@ function Reservation({ reservations = [] }) {
             {reservation.status}
           </td>
           {/* buttons here */}
+          <Link
+              className="btn btn-primary"
+              to={`/reservations/${reservation.reservation_id}/seat`}
+            >
+              seat
+            </Link>
         </tr>
       );
     })
