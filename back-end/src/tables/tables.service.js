@@ -16,20 +16,13 @@ function read(table_id) {
 }
 
 //i need to add 'status' column to the reservations table
-function seat(table_id, reservation_id) {
-  return knex.transaction(async (transaction) => {
-    await knex("reservations")
-      .where({ reservation_id })
-      .update({ status: "seated" })
-      .transacting(transaction);
 
-    return knex("tables")
-      .where({ table_id })
-      .update({ reservation_id }, "*")
-      .transacting(transaction)
-      .then((records) => records[0]);
-  });
+function seat(table){
+  return knex(tableName)
+  .update(table, "*")
+  .where({ table_id: table.table_id });
 }
+
 
 module.exports = {
   list,
