@@ -10,6 +10,7 @@ exports.up = function (knex) {
     table.timestamps(true, true);
   });
 };
+//is there a reservation id in the tables table for validation
 
 exports.down = function (knex) {
   return knex.schema.dropTable("reservations");
