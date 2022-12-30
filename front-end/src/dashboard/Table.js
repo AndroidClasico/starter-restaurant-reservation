@@ -1,6 +1,6 @@
 import React from "react";
 
-function Table({ tables = [] }) {
+function Table({ tables = [], finishHandler }) {
 
   const rows = tables.length ? (
     tables.map((table) => {
@@ -10,6 +10,13 @@ function Table({ tables = [] }) {
           <div className="col-sm-2">{table.capacity}</div>
           <div className="col-sm-1" data-table-id-status={table.table_id}>{table.reservation_id ? "Occupied" : "Free"}</div>
           <div className="col-sm-1">
+          <button
+            data-table-id-finish={table.table_id}
+            className="btn btn-success"
+            onClick={() => finishHandler(table)}
+          >
+            Finish
+          </button>
           </div>
         </div>
       );

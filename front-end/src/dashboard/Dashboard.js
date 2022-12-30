@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listReservations, listTables } from "../utils/api";
+import { listReservations, listTables, finishTable } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import ReservationList from "./Reservation";
 import Table from "./Table";
@@ -28,7 +28,26 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
-  
+  const finishHandler = async (table) => {
+    const abortController = new AbortController();
+    try {
+      if (
+        window.confirm(
+          "Is this table ready to seat new guests? This cannot be undone."
+        )
+      ) {
+        await finishTable(table.table_id, abortController.signal);
+        await loadDashboard();
+      }
+      await loadDashboard();
+    } catch (error) {
+      if (reservationsError.name === "AbortError") {
+        console.log("aborted");
+      }
+      setReservationsError(error);
+    }
+    return () => abortController.abort();
+  };
 
   return (
     <main>
@@ -38,9 +57,8 @@ function Dashboard({ date }) {
         <ErrorAlert error={reservationsError} />
         {/* {JSON.stringify(reservations)} */}
         <ReservationList reservations={reservations} />
-        <Table tables={tables} />
+        <Table tables={tables} finishHandler={finishHandler} />
       </div>
-      
     </main>
   );
 }

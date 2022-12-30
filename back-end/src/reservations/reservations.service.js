@@ -1,52 +1,62 @@
 const knex = require("../db/connection");
 
 function list() {
-  return knex("reservations")
-    .select("*")
-    .orderBy("reservation_time")
-    .returning("*");
+  return knex("reservations").select("*").whereNot({status: "finished"});
 }
 
-function listOnDate(reservation_date) {
+function listByDate(reservation_date) {
   return knex("reservations")
     .select("*")
     .where({ reservation_date })
+    .whereNot({status: "finished"})
     .orderBy("reservation_time");
 }
 
-function create(reservation) {
+function create(newReservation) {
   return knex("reservations")
-    .insert(reservation)
+    .insert(newReservation)
     .returning("*")
-    .then((createdRecords) => createdRecords[0]);
+    .then((newReservation) => newReservation[0]);
 }
 
-function read(reservation_id) {
+function listByPhone(mobile_number) {
+    return knex("reservations")
+      .whereRaw(
+        "translate(mobile_number, '() -', '') like ?",
+        `%${mobile_number.replace(/\D/g, "")}%`
+      )
+      .returning("*")
+      .orderBy("reservation_date")
+  }
+
+  function read(reservation_id) {
+    return knex("reservations")
+      .select("*")
+      .where({reservation_id})  
+  }
+
+  function updateReservationStatus(status, reservation_id) {
+    return knex("reservations")
+      .where({reservation_id})
+      .update({status: status})
+      .returning("*")
+      .then(result => result[0])
+  }
+
+  function update (updatedReservation, reservation_id) {
   return knex("reservations")
-    .select("*")
-    .where({ reservation_id: reservation_id })
-    .first();
-}
-
-function update(reservation) {
-  return knex("reservations")
-    .select("*")
-    .where({ reservation_id: reservation.reservation_id })
-    .update(reservation, "*")
-    .then((record) => record[0]);
-  // .then(() => read(reservation.reservation_id));
-}
-
-//join reservations and tables tables
-//if table has a reservation id then its status is seated
-//if a reservation has a reservation id then its status is booked
-//something like this
-//think critical
+      .where({reservation_id})
+      .update({...updatedReservation})
+      .returning("*")
+      .then(result => result[0])
+  }
 
 module.exports = {
   list,
-  listOnDate,
+  listByDate,
+  listByPhone,
   create,
-  update,
   read,
+  updateReservationStatus,
+  update
 };

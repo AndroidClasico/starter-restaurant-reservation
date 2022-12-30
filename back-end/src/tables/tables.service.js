@@ -1,32 +1,47 @@
 const knex = require("../db/connection");
-const tableName = "tables";
 
 function list() {
-  return knex(tableName).orderBy("table_name", "asc");
-}
-
-function create(table) {
-  return knex(tableName)
-    .insert(table, "*")
-    .then((createdRecords) => createdRecords[0]);
+  return knex("tables").select("*").orderBy("table_name");
 }
 
 function read(table_id) {
-  return knex(tableName).where({ table_id: table_id }).first();
+  return knex("tables").select("*").where({ table_id }).first();
 }
 
-//i need to add 'status' column to the reservations table
-
-function seat(table){
-  return knex(tableName)
-  .update(table, "*")
-  .where({ table_id: table.table_id });
+function create(newTable) {
+  return knex("tables")
+    .insert(newTable)
+    .returning("*")
+    .then((newTable) => newTable[0]);
 }
 
+async function update(reservation_id, table_id) {
+  return knex("reservations")
+    .where({ reservation_id })
+    .update({ status: "seated" })
+    .then(() =>
+      knex("tables")
+        .where({ table_id })
+        .update({ reservation_id }, [
+          "table_id",
+          "table_name",
+          "capacity",
+          "reservation_id",
+        ])
+        .then((result) => result[0].status)
+    );
+}
 
-module.exports = {
-  list,
-  create,
-  read,
-  seat,
-};
+function finishTable(reservation_id, table_id) {
+  return knex("reservations")
+    .where({ reservation_id })
+    .update({ status: "finished" })
+    .returning("*")
+    .then(() => {
+      return knex("tables")
+        .where({ table_id })
+        .update({ reservation_id: null });
+    });
+}
+
+module.exports = { list, read, create, update, finishTable };
