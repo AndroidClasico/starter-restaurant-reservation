@@ -99,6 +99,18 @@ export async function readReservation(reservation_id, signal) {
     .then(formatReservationTime);
 }
 
+
+export async function updateStatus(status, reservation_id, signal) {
+  const url = `${API_BASE_URL}/reservations/${reservation_id}/status`;
+  const options = {
+    method: 'PUT',
+    headers,
+    body: JSON.stringify({ data: { status } }),
+    signal,
+  };
+  return await fetchJson(url, options);
+}
+
 export async function seatReservation(reservation_id, table_id, signal) {
   const url = `${API_BASE_URL}/tables/${table_id}/seat`;
   const options = {

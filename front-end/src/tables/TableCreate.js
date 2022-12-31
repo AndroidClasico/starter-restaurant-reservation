@@ -1,114 +1,84 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
-import { createTable } from "../utils/api"
-import ErrorAlert from "../layout/ErrorAlert";
-
-/**
- * Defines the new table for this application.
- *
- * @returns {JSX.Element}
- */
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { createTable } from '../utils/api';
+import ErrorAlert from '../layout/ErrorAlert';
 
 function TableCreate() {
   const history = useHistory();
-  const initialState = {
-    table_name: "",
-    capacity: 0,
-  };
 
-  const [table, setTable] = useState(initialState);
-  const [errors, setErrors] = useState(null);
+  const [error, setError] = useState(null);
+  const [table, setTable] = useState({
+    table_name: '',
+    capacity: '',
+  });
 
-  function validate(table) {
-    const errors = [];
-
-    function isValidName({ table_name }) {
-      if (table_name.length < 2) {
-        errors.push(
-          new Error(`Table name '${table_name}' must be 2 or more characters`)
-        );
-      }
-    }
-
-    function isValidCapacity({ capacity }) {
-      if (capacity <= 0) {
-        errors.push(new Error("Capacity must be at least 1"));
-      }
-    }
-
-    isValidName(table);
-    isValidCapacity(table);
-
-    return errors;
+  function cancelHandler() {
+    history.goBack();
   }
 
-  const handleChange = ({ target: { name, value } }) => {
-    let newValue = value;
-    if(name === 'capacity') {
-      newValue = Number(value); 
-    }
-    setTable({
-      ...table,
-      [name]: newValue,
-    });
-  };
-
-  function handleSubmit(event) {
+  function submitHandler(event) {
     event.preventDefault();
 
-    const errors = validate(table);
-    if (errors.length) {
-      console.log(errors);
-      return setErrors(errors);
-    }
-
-    const abortController = new AbortController();
-    setErrors(null);
-    createTable(table, abortController.signal)
-      .then(() => history.push(`/dashboard`))
-      .catch((error) => {
-        setErrors(error);
-      });
-    return () => abortController.abort();
+    createTable(table)
+      .then(() => {
+        history.push('/');
+      })
+      .catch(setError);
+  }
+  function changeHandler({ target: { name, value } }) {
+    setTable((previousTable) => ({
+      ...previousTable,
+      [name]: value,
+    }));
   }
 
   return (
     <main>
-      <h1>Create Table</h1>
-      <ErrorAlert error={ errors ? errors[0] : null } />
-      <form name="table-form" onSubmit={handleSubmit}>
-        <div className="form-group d-md-flex mb-3">
-          <label htmlFor="table-name">Name</label>
-          <input
-            id="table-name"
-            name="table_name"
-            type="text"
-            onChange={handleChange}
-            value={table.table_name}
-            required
-          />
+      <h1 className="mb-3">Create Table</h1>
+      <ErrorAlert error={error} />
+      <form onSubmit={submitHandler} className="mb-4">
+        <div className="row mb-3">
+          <div className="col-6 form-group">
+            <label className="form-label" htmlFor="table_name">
+              Table Name
+            </label>
+            <input
+              className="form-control"
+              id="table_name"
+              name="table_name"
+              type="text"
+              minLength="2"
+              onChange={changeHandler}
+              required={true}
+            />
+          </div>
+          <div className="col-6 form-group">
+            <label className="form-label" htmlFor="capacity">
+              Capacity
+            </label>
+            <input
+              className="form-control"
+              id="capacity"
+              name="capacity"
+              type="number"
+              min="1"
+              onChange={changeHandler}
+              required={true}
+            />
+          </div>
         </div>
-        <div className="form-group d-md-flex mb-3">
-          <label htmlFor="table-capacity">Capacity</label>
-          <input
-            id="table-capacity"
-            name="capacity"
-            type="number"
-            onChange={handleChange}
-            value={table.capacity}
-            required
-          />
+        <div>
+          <button
+            type="button"
+            className="btn btn-secondary mr-2"
+            onClick={cancelHandler}
+          >
+            Cancel
+          </button>
+          <button type="submit" className="btn btn-primary">
+            Submit
+          </button>
         </div>
-        <button
-          type="button"
-          className="btn btn-secondary mr-2"
-          onClick={() => history.goBack()}
-        >
-          Cancel
-        </button>
-        <button type="submit" className="btn btn-primary">
-          Submit
-        </button>
       </form>
     </main>
   );
