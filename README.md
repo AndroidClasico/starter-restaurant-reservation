@@ -40,7 +40,7 @@
 
 ## Dashboard
 
-![Screenshot](https://imgur.com/FGAcvdU)
+![Screenshot](https://i.imgur.com/FGAcvdU.png)
 
 ## Table Seating
 
