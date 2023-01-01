@@ -40,27 +40,27 @@
 
 ## Dashboard
 
-![Screenshot](https://i.imgur.com/FGAcvdU.png)
+![View of the Dashboard page.](https://i.imgur.com/FGAcvdU.png)
 
 ## Table Seating
 
-![Screenshot]()
+![Seat a reservation.](https://i.imgur.com/zwRR1Nn.png)
 
 ## Dashboard with seated table
 
-![Screenshot]()
+![View of the dashboard with a seated table.](https://i.imgur.com/tlAMpZY.png)
 
 ## Create Reservation
 
-![Screenshot]()
+![Create a Reservation form.](https://i.imgur.com/S2pvicH.png)
 
 ## Create Table
 
-![Screenshot]()
+![Create a table form.](https://i.imgur.com/zegFqAk.png)
 
 ## Search by Phone Number
 
-![Screenshot]()
+![Find a reservation by phone number.](https://i.imgur.com/L5lRhvo.png)
 
 ## Project Requirements
 
