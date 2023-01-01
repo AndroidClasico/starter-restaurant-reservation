@@ -25,8 +25,8 @@ function TableList({ tables }) {
       key={table.table_id}
       className={classNames({
         card: true,
-        'bg-secondary': table.reservation_id,
-        'bg-success': !table.reservation_id,
+        'bg-info': table.reservation_id,
+        'bg-light': !table.reservation_id,
       })}
     >
       <div className="card-body text-center">

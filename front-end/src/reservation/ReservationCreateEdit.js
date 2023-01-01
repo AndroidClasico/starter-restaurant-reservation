@@ -18,7 +18,7 @@ function ReservationCreateEdit() {
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
-    mobile_number: '(555)-555-5555',
+    mobile_number: '',
     reservation_date: today(),
     reservation_time: '10:30',
     people: 0,
