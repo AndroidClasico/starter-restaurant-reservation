@@ -1,5 +1,5 @@
 # Capstone: Restaurant Reservation System
-
+> Author Alexandra Reynaldo
 > This was my final capstone project in the Thinkful Software Engineering Flex Program.
 
 ## Project Description
