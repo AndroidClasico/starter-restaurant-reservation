@@ -1,9 +1,9 @@
 import React from 'react';
-import ReservationCard from '../reservation/ReservationCard';
+import ReservationCard from './ReservationCard';
 
 function ReservationList({ reservations }) {
   const activeReservations = reservations.filter(
-    (reservation) => reservation.status !== ('finished' || 'cancelled')
+    (reservation) => reservation.status !== 'finished'
   );
   const tableRows = activeReservations.map((reservation) => {
     return (
