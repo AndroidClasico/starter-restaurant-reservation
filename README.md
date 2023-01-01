@@ -48,7 +48,7 @@
 
 ## Dashboard with seated table
 
-![View of the dashboard with a seated table.](https://i.imgur.com/tlAMpZY.png)
+![View of the dashboard with a seated table.](https://i.imgur.com/zegFqAk.png)
 
 ## Create Reservation
 
