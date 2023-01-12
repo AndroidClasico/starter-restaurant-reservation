@@ -23,7 +23,7 @@
 
 ## Deployment
 
-- [Periodic Tables - client]()
+- [Periodic Tables - client](https://starter-restaurant-reservation-red.vercel.app/dashboard)
 - [Periodic Tables - server]()
 
 ### API Paths
